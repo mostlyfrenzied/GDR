@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>For Gargi ♥</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Playfair+Display:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg1:#ffe3ec;--bg2:#ffc2d6;--ink:#5a1530;--accent:#e0245e;--card:rgba(255,255,255,.55);
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg1:#2a0d22;--bg2:#5b1740;--ink:#ffe3ee;--accent:#ff5c8a;--card:rgba(255,255,255,.08)}}
+:root[data-theme="dark"]{--bg1:#2a0d22;--bg2:#5b1740;--ink:#ffe3ee;--accent:#ff5c8a;--card:rgba(255,255,255,.08)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;min-height:100%;background:linear-gradient(160deg,var(--bg1),var(--bg2));color:var(--ink);
+  font-family:'Playfair Display',Georgia,serif;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:28px 20px 40px;text-align:center;overflow-x:hidden;position:relative}
+.heart{position:fixed;bottom:-40px;pointer-events:none;animation:rise linear forwards;z-index:0;color:var(--accent)}
+@keyframes rise{to{transform:translateY(-110vh) rotate(25deg);opacity:0}}
+main{position:relative;z-index:1;max-width:460px;width:100%}
+.hello{font-family:'Dancing Script',cursive,serif;font-size:1.7rem;color:var(--accent);margin:0 0 14px}
+.frame{display:block;width:240px;height:240px;margin:0 auto 22px;border-radius:50%;padding:6px;
+  background:conic-gradient(from 0deg,var(--accent),#ffd1e0,var(--accent));
+  box-shadow:0 0 40px color-mix(in srgb,var(--accent) 55%,transparent);animation:pulse 3s ease-in-out infinite;cursor:pointer}
+.photo{width:100%;height:100%;border-radius:50%;background:var(--card) center/cover no-repeat;display:block;padding:0;overflow:hidden}
+@keyframes pulse{50%{transform:scale(1.04)}}
+h1{font-family:'Dancing Script',cursive,serif;font-size:clamp(2.2rem,9vw,3.2rem);margin:0 0 10px;line-height:1.15}
+#type{min-height:3.6em;font-style:italic;font-size:1.15rem;line-height:1.6;margin:0 0 22px}
+.caret{display:inline-block;width:2px;height:1.1em;background:var(--accent);vertical-align:-3px;margin-left:2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+button{font:inherit;background:var(--accent);color:#fff;border:0;border-radius:999px;padding:12px 26px;font-size:1rem;cursor:pointer;
+  box-shadow:0 6px 18px color-mix(in srgb,var(--accent) 45%,transparent);transition:transform .15s}
+button:active{transform:scale(.95)}
+#reasons{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:10px}
+#reasons li{background:var(--card);backdrop-filter:blur(6px);border-radius:14px;padding:12px 16px;opacity:0;transform:translateY(12px);transition:.6s}
+#reasons li.show{opacity:1;transform:none}
+small{display:block;margin-top:26px;opacity:.6;font-size:.8rem}
+input[type=file]{display:none}
+</style>
+</head>
+<body>
+<main>
+  <p class="hello" id="hello">Hey Gargi…</p>
+  <label class="frame" for="pic" title="Tap to choose a photo">
+    <div class="photo" id="photo" role="img" aria-label="Her photo" style="background-image:url('gargi.jpg')"></div>
+  </label>
+  <input type="file" id="pic" accept="image/*">
+  <h1>Gargi, you are very beautiful</h1>
+  <p id="type"><span id="txt"></span><span class="caret"></span></p>
+  <button id="more">Tap for a surprise ♥</button>
+  <ul id="reasons"></ul>
+  <small>Made with a nervous heart, just for you.</small>
+</main>
+<script>
+(function(){
+  // Name from the link: add #Name at the end of the page address
+  var name = decodeURIComponent((location.hash||'').slice(1)).replace(/[^\p{L}\p{N} ]/gu,'').slice(0,30);
+  var hello = document.getElementById('hello');
+  if(name) hello.textContent = 'Hey ' + name + '…';
+
+  // Photo slot (preview only, kept in memory)
+  var photo = document.getElementById('photo');
+  document.getElementById('pic').addEventListener('change', function(e){
+    var f = e.target.files[0]; if(!f) return;
+    var r = new FileReader();
+    r.onload = function(){ photo.style.backgroundImage = 'url(' + r.result + ')'; photo.textContent = ''; };
+    r.readAsDataURL(f);
+  });
+
+  // Typewriter
+  var lines = [
+    'Every time I see you, my day gets brighter.',
+    'Your smile is my favorite thing to think about.',
+    'I just wanted you to know how amazing you are.'
+  ];
+  var txt = document.getElementById('txt'), li = 0, ci = 0, del = false;
+  function tick(){
+    var s = lines[li];
+    if(!del){ txt.textContent = s.slice(0, ++ci); if(ci === s.length){ del = true; return setTimeout(tick, 2000); } }
+    else { txt.textContent = s.slice(0, --ci); if(ci === 0){ del = false; li = (li+1) % lines.length; } }
+    setTimeout(tick, del ? 22 : 55);
+  }
+  tick();
+
+  // Floating hearts
+  var glyphs = ['♥','❤','💗','💖'];
+  function heart(x){
+    var h = document.createElement('div');
+    h.className = 'heart';
+    h.textContent = glyphs[Math.floor(Math.random()*glyphs.length)];
+    h.style.left = (x != null ? x : Math.random()*100) + (x != null ? 'px' : 'vw');
+    h.style.fontSize = (14 + Math.random()*26) + 'px';
+    h.style.opacity = .4 + Math.random()*.5;
+    h.style.animationDuration = (5 + Math.random()*6) + 's';
+    document.body.appendChild(h);
+    setTimeout(function(){ h.remove(); }, 11500);
+  }
+  setInterval(heart, 600);
+  document.addEventListener('click', function(e){ for(var i=0;i<4;i++) heart(e.clientX + (Math.random()*60-30)); });
+
+  // Reasons reveal
+  var reasons = [
+    '✨ Your smile lights up every room',
+    '💫 Your kindness makes people feel special',
+    '🌸 You are beautiful inside and out',
+    '💖 Shotti te tui alda he'
+  ];
+  var ul = document.getElementById('reasons'), n = 0, btn = document.getElementById('more');
+  btn.addEventListener('click', function(){
+    if(n < reasons.length){
+      var li = document.createElement('li'); li.textContent = reasons[n++]; ul.appendChild(li);
+      requestAnimationFrame(function(){ requestAnimationFrame(function(){ li.classList.add('show'); }); });
+      for(var i=0;i<12;i++) setTimeout(heart, i*60);
+      if(n === reasons.length) btn.textContent = 'Okay, that’s all… for now ♥';
+    }
+  });
+})();
+</script>
+</body>
+</html>
